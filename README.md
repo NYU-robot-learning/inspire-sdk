@@ -52,10 +52,6 @@ joint_angles = operator.motor_to_joint(motor_angles)
 operator.reset()
 ```
 
-**Fingertip Workspace Visualization:**
-
-![Fingertip Workspace](img/percentage_to_z.png)
-
 ## Direct SDK Control
 
 For direct control without inverse kinematics, use the SDK classes below.
