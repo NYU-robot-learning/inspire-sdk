@@ -56,10 +56,7 @@ operator.reset()
 
 The green spheres represent target points, which are the recorded points plus noise. The operator then determines the motor percentage. Using this percentage, joint angles are calculated and provided to Mujoco.
 
-<video width="800" controls>
-  <source src="https://raw.githubusercontent.com/NYU-robot-learning/inspire-sdk/master/img/ik_vis.mp4" type="video/mp4">
-  <a href="https://github.com/NYU-robot-learning/inspire-sdk/blob/master/img/ik_vis.mp4">View video on GitHub</a>
-</video>
+https://raw.githubusercontent.com/NYU-robot-learning/inspire-sdk/master/img/ik_vis.mp4
 
 ## Direct SDK Control
 
