@@ -2,6 +2,11 @@
 
 Python SDK for controlling the RH56 dexterous robot hand with optional wrist control.
 
+This SDK provides two ways to control the hand:
+
+- **Hand Operator**: High-level control using 3D fingertip target positions (inverse kinematics)
+- **Direct SDK**: Low-level control using motor angles and percentages
+
 ## Installation
 
 ```bash
@@ -10,7 +15,7 @@ pip install pyserial
 
 ## Hand Operator (Inverse Kinematics)
 
-The `InspireHandOperator` provides inverse kinematics to control the hand using fingertip target positions in 3D space.
+The `InspireHandOperator` provides inverse kinematics to control the hand using fingertip target positions in 3D space. Simply provide where you want each fingertip to be, and the operator handles the conversion to motor commands.
 
 ### Usage
 
@@ -27,7 +32,8 @@ operator = InspireHandOperator(
 )
 
 # Control hand using fingertip target positions (5 fingers × 3D coordinates)
-# Order: index, middle, ring, pinky, thumb
+# Input format: numpy array of shape (5, 3) with finger order: index, middle, ring, pinky, thumb
+# Coordinates are in meters relative to hand base frame
 target_positions = np.array([
     [0.1, 0.05, 0.02],  # index fingertip (x, y, z)
     [0.1, 0.03, 0.02],  # middle fingertip
@@ -36,33 +42,23 @@ target_positions = np.array([
     [0.08, 0.02, 0.03], # thumb fingertip
 ])
 
+# Execute movement - returns motor control ratios
 motor_angles = operator.step(target_positions)
 
-# Convert motor angles to joint angles
+# Optionally convert motor angles to joint angles for kinematics
 joint_angles = operator.motor_to_joint(motor_angles)
 
 # Reset hand to fully closed position
 operator.reset()
 ```
 
-### How Operator IK Works
-
-The operator uses a two-stage inverse kinematics approach:
-
-1. **Workspace Projection**: Target fingertip positions are projected to the nearest reachable point on learned fingertip workspaces (polynomial curves for 4 fingers, quadratic surface for thumb).
+**Fingertip Workspace Visualization:**
 
 ![Fingertip Workspace](img/percentage_to_z.png)
 
-2. **Regression Mapping**: Projected positions are converted to motor control ratios using learned regression models:
-   - **4 Fingers**: Sigmoid regression maps z-position to DOF ratio
-   - **Thumb**: Polynomial 2D regression maps (x,y,z) to two DOF ratios
+## Direct SDK Control
 
-![Sigmoid Fits](img/sigmoid_fit_index.png)
-![Thumb Regression](img/thumb_polynomial_regression.png)
-
-The operator automatically handles the conversion from fingertip space to motor angles and sends commands to the hand.
-
-## Quick Start
+For direct control without inverse kinematics, use the SDK classes below.
 
 ### Hand Only (RH56RobotHand)
 
